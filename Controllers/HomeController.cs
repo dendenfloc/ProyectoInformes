@@ -120,10 +120,11 @@ namespace ProyectoSonia.Controllers
                             var options = new DropboxClientConfig();
                             options.HttpClient = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler());
                             var accessToken = _configuration.GetSection("Dropbox")["AccessToken"];
+                            var dropboxTOkenMYSQL = await _conexion.Dropboxkeys.Where(t => t.Iddropboxkey.Equals(1)).FirstOrDefaultAsync();
 
                             //var dbx = new DropboxClient(token, options);
 
-                            var dbx = new DropboxClient(accessToken, options);
+                            var dbx = new DropboxClient(dropboxTOkenMYSQL.Dropboxkeycol, options);
 
 
                             var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH-mm-ss");
@@ -399,11 +400,12 @@ namespace ProyectoSonia.Controllers
                 stream.Seek(0, SeekOrigin.Begin);
 
                 var accessToken = _configuration.GetSection("Dropbox")["AccessToken"];
+                var dropboxTOkenMYSQL = await _conexion.Dropboxkeys.Where(t => t.Iddropboxkey.Equals(1)).FirstOrDefaultAsync();
                 var options = new DropboxClientConfig();
                 options.HttpClient = new System.Net.Http.HttpClient(new System.Net.Http.HttpClientHandler());
                 //var dbx = new DropboxClient("sl.BZuK1bX2YDb_Tpg5c_EV6qOzcstyom4Jt7EPSAYeysDjXA1GsEo3gOhIdnH5ryTBYwW6XkDuu4cPX1nLyZGklj8V9aFrCIWlWkajRv10eSYMKEKsPUI7ZK2X69tfwRe83w51wek14fD9", options);
-                var dbx = new DropboxClient(accessToken, options);
-
+                //var dbx = new DropboxClient(accessToken, options);
+                var dbx = new DropboxClient(dropboxTOkenMYSQL.Dropboxkeycol, options);
 
                 // Ruta de la carpeta que deseas crear
                 var rutaCarpeta = "/" + imagenes.FirstOrDefault().IdInformes;
