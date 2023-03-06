@@ -1,0 +1,360 @@
+﻿@model IEnumerable<ProyectoSonia.Models.Imagene>
+@*@using X.PagedList.Mvc.Core;
+
+    @using X.PagedList;*@
+
+@*@model IPagedList<Imagene>*@
+
+<style>
+    .toast-float {
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 10000;
+    }
+
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        @foreach (var item in Model)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="image-container">
+                                        <img src="@item.Link" class="card-img-top" alt="..." style="width: 100%; height:25vh; object-fit: contain;">
+                                        <div class="image-overlay">
+                                            <img src="@item.Link" alt="..." style="width: auto; height: 70vh; max-width: 100%; position: absolute; top: 0; left: 0; display: none; margin-top: 20px; margin-left: 20px;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6" id="CreateModal">
+                                    <div class="mb-3 row">
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">Titulo Foto</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" id="inputPassword" asp-for="@item.TituloImagen" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">Área</label>
+                                        <div class="col-sm-10">
+
+                                            <select class="form-control form-control-sm" asp-items="ViewBag.NUM_ANNOS" asp-for="@item.IdAreas" required></select>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="mb-3 row">
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">Fecha</label>
+                                        <div class="col-sm-4">
+                                            <input type="date" class="form-control" asp-for="@item.Fecha" required>
+                                            <input type="number" class="form-control" asp-for="@item.IdImagenes" id="inputIdImagenes" hidden>
+                                            <input type="number" class="form-control" asp-for="@item.IdInformes" id="inputIdInformes" hidden>
+                                        </div>
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">Hora</label>
+                                        <div class="col-sm-4">
+                                            <input type="time" class="form-control" asp-for="@item.Fecha" required>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">Palabras Clave</label>
+                                        <div class="col-sm-10">
+
+                                            <select class="form-control form-control-sm palabras-clave" id="palabras-clave-@item.IdImagenes" asp-items="ViewBag.PalabrasClaves"></select>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <label for="inputPassword" class="col-sm-2 col-form-label">Medida Correctiva</label>
+                                        <div class="col-sm-10">
+                                            @*<textarea class="form-control" placeholder="Escribe aquí la medida correctiva" id="floatingTextarea2" asp-for="@item.Medidacorrectiva" required></textarea>*@
+                                            <textarea class="form-control medida-correctiva" id="medida-correctiva-@item.IdImagenes" name="floatingTextarea2" placeholder="Escribe aquí la medida correctiva" asp-for="@item.Medidacorrectiva" required></textarea>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+
+        <hr />
+        <div class="row">
+            <div class="col-md-12">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        @*<li class="page-item">
+                                @if (ViewBag.PreviousPageNumber == 0)
+                                {
+                                    <a class="page-link disabled" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                }
+                                else
+                                {
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                }
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                            </li>*@
+                        @foreach (var pageNumber in ViewBag.paginas)
+                        {
+                            if (@ViewBag.pageNumber == pageNumber)
+                            {
+                                <li class="page-item">
+                                    @*<a class="page-link" href="@Url.Action("Index", new { page = pageNumber })">@pageNumber</a>*@
+                                    <a class="page-link active">@pageNumber</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item">
+                                    @*<a class="page-link" href="@Url.Action("Index", new { page = pageNumber })">@pageNumber</a>*@
+                                    <a class="page-link" style="cursor: pointer;">@pageNumber</a>
+                                </li>
+                            }
+
+                        }
+                        @*<li class="page-item">
+                                @if (ViewBag.NextPageNumber == ViewBag.paginas.Max())
+                                {
+                                    <a class="page-link disabled" href="#">Next</a>
+                                }
+                                else
+                                {
+                                    <a class="page-link" href="#">Next</a>
+                                }
+                            </li>*@
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+
+        <button id="btnEnviarDatos" class="btn btn-success" type="button">
+            Guardar Información
+        </button>
+
+        <button id="btnCargando" class="btn btn-outline-success d-none" type="button" disabled>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Cargando...
+        </button>
+
+    </div>
+</div>
+
+
+<hr />
+
+@*<div class="row">
+        <div class="col-md-12">
+     <div class="toast align-items-center text-white bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Por favor complete todos los campos del formulario.
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+
+        </div>
+    </div>*@
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="toast toast-float align-items-center text-white bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    Por favor complete todos los campos del formulario.
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Scripts {
+
+    <script>
+        $('.image-container').on({
+            mouseenter: function () {
+                $(this).find('.image-overlay img').show();
+            },
+            mousemove: function (e) {
+                var parentOffset = $(this).offset();
+                var relX = e.pageX - parentOffset.left;
+                var relY = e.pageY - parentOffset.top;
+                $(this).find('.image-overlay img').css({
+                    top: relY + 20,
+                    left: relX + 20
+                });
+            },
+            mouseleave: function () {
+                $(this).find('.image-overlay img').hide();
+            }
+        });
+    </script>
+
+
+    <script>
+        function obtenerDatos() {
+            var datos = [];
+            $('.card').each(function () {
+                var tituloFoto = $(this).find('#inputPassword').val();
+                var area = $(this).find('select option:selected').val();
+                var fecha = $(this).find('input[type=date]').val();
+                var hora = $(this).find('input[type=time]').val();
+                //var medidaCorrectiva = $(this).find('#floatingTextarea2').val();
+                var medidaCorrectiva = $(this).find('textarea[name="floatingTextarea2"]').val();
+
+                var inputIdImagenes = $(this).find('#inputIdImagenes').val();
+                var inputIdInformes = $(this).find('#inputIdInformes').val();
+                var fechaHora = fecha + ' ' + hora;
+
+                datos.push({
+                    TituloImagen: tituloFoto,
+                    IdAreas: area,
+                    Fecha: fechaHora,
+                    Medidacorrectiva: medidaCorrectiva,
+                    IdInformes: inputIdInformes,
+                    IdImagenes: inputIdImagenes
+                });
+            });
+            return datos;
+        }
+
+        function validarCampos() {
+            var formValido = true;
+            $('input[required], select[required], textarea[required]').each(function () {
+                if ($(this).val() == '' || $(this).val() == 0) {
+                    formValido = false;
+                    $(this).addClass('is-invalid');
+                } else {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            if (!formValido) {
+                //var myToast = $('.toast').toast({
+                //    delay: 3000
+                //});
+                //myToast.toast('show');
+                var toastEl = document.querySelector('.toast-float');
+                var toast = new bootstrap.Toast(toastEl);
+                toast.show();
+                setTimeout(function () {
+                    toast.hide();
+                }, 5000);
+                return false;
+            }
+
+            return formValido;
+        }
+
+        $(document).ready(function () {
+            $('#btnEnviarDatos').on('click', function () {
+
+                var valid = validarCampos();
+                if (valid) {
+
+                    var datatoSend = obtenerDatos();
+
+                    // Ocultar el botón de carga y mostrar el botón de cargando
+                    $('#btnEnviarDatos').hide();
+                    //$('#btnCargando').show();
+                    $('#btnCargando').removeClass('d-none').show();
+                    debugger
+                    // Deshabilitar todos los elementos del formulario
+                    $('input, button').prop('disabled', true);
+                    var page = @ViewBag.pageNumber;
+
+                    $.ajax({
+                        url: '@Url.Action("EnviarDatos", "Home")',
+                        type: 'POST',
+                        data: { datos: datatoSend },
+                        success: function (response) {
+
+                             var url = "@Html.Raw(@Url.Action("formatoInforme", "Home", new { id = Model.First().IdInformes, pageNumber = "opcion2" }))";
+                            url = url.replace("opcion2", encodeURIComponent(page));
+
+                            window.location.href = url;
+
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+                }
+            });
+
+            $('.pagination .page-link').on('click', function (event) {
+                event.preventDefault();
+                var page = $(this).text();
+
+                var valid = validarCampos();
+                if (valid) {
+
+                    // Ocultar el botón de carga y mostrar el botón de cargando
+                    $('#btnEnviarDatos').hide();
+                    //$('#btnCargando').show();
+                    $('#btnCargando').removeClass('d-none').show();
+                    debugger
+                    // Deshabilitar todos los elementos del formulario
+                    $('input, button').prop('disabled', true);
+
+                    var datatoSend = obtenerDatos();
+                    $.ajax({
+                        url: '@Url.Action("EnviarDatos", "Home")',
+                        type: 'POST',
+                        data: { datos: datatoSend },
+                        success: function (response) {
+
+                             var url = "@Html.Raw(@Url.Action("formatoInforme", "Home", new { id = Model.First().IdInformes, pageNumber = "opcion2" }))";
+                            url = url.replace("opcion2", encodeURIComponent(page));
+
+                            window.location.href = url;
+
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+                    // ... código para enviar datos y número de página
+                }
+            });
+        });
+
+        $('.palabras-clave').change(function () {
+            var idImagen = $(this).attr('id').split('-')[2];
+            var medidaCorrectiva = $('#medida-correctiva-' + idImagen);
+            var palabrasClave = $(this).val();
+
+            // Aquí puedes hacer una llamada AJAX al controlador para obtener la medida correctiva correspondiente a las palabras clave seleccionadas
+            // En este ejemplo, simplemente asignaremos el valor del select a la medida correctiva
+            $.ajax({
+                url: '@Url.Action("GetOptions", "Home")',
+                type: 'POST',
+                data: { value: palabrasClave },
+                success: function (options) {
+                    //var textarea = $('#floatingTextarea2');
+                    //textarea.val(options.join('\n'));
+
+                    medidaCorrectiva.val(options);
+
+                }
+            });
+
+
+        });
+    </script>
+}

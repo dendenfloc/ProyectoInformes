@@ -1,0 +1,151 @@
+﻿@{
+    var idInforme = (int)ViewBag.idInforme;
+}
+@if (idInforme == 0)
+{
+    <h1>
+        Crear Informe
+    </h1>
+    <form method="post" enctype="multipart/form-data" asp-action="CargarImagenes" id="formIndex">
+        <div class="col-md-12">
+            <div class="mb-3">
+                <label for="formFileMultiple" class="form-label">Imagenes</label>
+                <input class="form-control" type="file" id="formFileMultiple" multiple name="imagenes">
+            </div>
+        </div>
+
+        @*<div class="col-md-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Token</span>
+                <input type="text" class="form-control" placeholder="Ingresa Token" aria-label="Username" aria-describedby="basic-addon1" name="token">
+            </div>
+        </div>*@
+        <div class="col-md-12">
+            <div class="mb-3">
+                <label for="formFileMultiple" class="form-label">Fecha Inicial </label>
+                <input type="date" class="form-control" name="fechaI" id="inputPassword">
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="mb-3">
+                <label for="formFileMultiple" class="form-label">Fecha Final </label>
+                <input type="date" class="form-control" name="fechaF" id="inputPassword">
+
+                @*<input type="number" class="form-control" name="idInforme" hidden value="@idInforme" id="idInforme">*@
+
+            </div>
+        </div>
+
+        <div class="col-md-12">
+
+
+            <button id="btnCargar" class="btn btn-outline-success" type="button">
+                Cargar Imágenes
+            </button>
+
+            <button id="btnCargando" class="btn btn-outline-success d-none" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Cargando...
+            </button>
+
+        </div>
+
+    </form>
+}
+else
+{
+    <h1 class=" text-success">
+        Añadir imagenes al Informe #@idInforme
+    </h1>
+    <form method="post" enctype="multipart/form-data" asp-action="CargarImagenes" id="formIndex">
+        <div class="col-md-12">
+            <div class="mb-3">
+                <label for="formFileMultiple" class="form-label">Imagenes</label>
+                <input class="form-control" type="file" id="formFileMultiple" multiple name="imagenes">
+            </div>
+        </div>
+
+        @*<div class="col-md-12">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Token</span>
+                <input type="text" class="form-control" placeholder="Ingresa Token" aria-label="Username" aria-describedby="basic-addon1" name="token">
+            </div>
+        </div>*@
+
+        <div class="col-md-12" hidden>
+            <div class="mb-3">
+                <label for="formFileMultiple" class="form-label">Fecha Final </label>
+                <input class="form-control" name="idsormaae" value="@idInforme" id="idsormaae">
+
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <button id="btnCargar" class="btn btn-outline-success" type="button">
+                Cargar Imágenes
+            </button>
+
+            <button id="btnCargando" class="btn btn-outline-success d-none" type="button" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Cargando...
+            </button>
+
+        </div>
+
+    </form>
+}
+
+
+<div class="toast align-items-center text-white bg-danger" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+        <div class="toast-body">
+            Por favor complete todos los campos del formulario.
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            // Manejar el evento de clic en el botón de carga
+            $('#btnCargar').click(function () {
+
+                var formValido = true;
+                $('input').each(function () {
+                    if ($(this).val() == '') {
+                        formValido = false;
+                        $(this).addClass('is-invalid');
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
+
+                if (!formValido) {
+                    var myToast = $('.toast').toast({
+                        delay: 3000
+                    });
+                    myToast.toast('show');
+                    return false;
+                }
+
+                // Ocultar el botón de carga y mostrar el botón de cargando
+                $('#btnCargar').hide();
+                //$('#btnCargando').show();
+                $('#btnCargando').removeClass('d-none').show();
+                debugger
+
+
+                // Enviar el formulario
+                $('#formIndex').submit();
+
+                // Deshabilitar todos los elementos del formulario
+                $('input, button').prop('disabled', true);
+
+            });
+        });
+
+    </script>
+}
+
