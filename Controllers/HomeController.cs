@@ -291,6 +291,11 @@ namespace ProyectoSonia.Controllers
 
         private async Task GenerarDoc(List<Imagene> imagenes, Area titulo)
         {
+            var firstPic = imagenes.FirstOrDefault();
+            var area = await _conexion.Areas.Where(t => t.IdAreas.Equals(firstPic.IdAreas)).FirstOrDefaultAsync();
+            var inform = await _conexion.Informes.Where(t => t.IdInformes.Equals(firstPic.IdInformes)).FirstOrDefaultAsync();
+            var rangeDate = inform.FechaInicial.Value.ToString("dd/MM/yyyy") + " al " + inform.FechaFinal.Value.ToString("dd/MM/yyyy");
+            var subTittle = "Supervision de bioseguridad en " + area.TituloWord + ", del " + rangeDate;
             using (var document = DocX.Create(titulo.Nombre +".docx"))
             {
                 // Inserta un párrafo con el título
@@ -300,6 +305,7 @@ namespace ProyectoSonia.Controllers
                 title.UnderlineStyle(UnderlineStyle.singleLine);
 
                 document.InsertParagraph("\n");
+                document.InsertParagraph(subTittle);
                 document.InsertParagraph("\n");
 
 
