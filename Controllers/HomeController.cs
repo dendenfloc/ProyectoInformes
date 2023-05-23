@@ -171,7 +171,7 @@ namespace ProyectoSonia.Controllers
        
             return RedirectToAction("formatoInforme", new { id = modelIdinforme, pageNumber = 1 });
         }
-
+        
         public async Task<IActionResult> formatoInforme(int id, int pageNumber)
         {
             pageNumber = pageNumber == 0 ? 1 : pageNumber;
@@ -196,6 +196,41 @@ namespace ProyectoSonia.Controllers
             ViewBag.pageNumber = pageNumber;
             ViewBag.PreviousPageNumber = pageNumber -1 ;
             ViewBag.NextPageNumber = pageNumber +1;
+
+            var imagenes = await _conexion.Imagenes
+                                    .Where(t => t.IdInformes.Equals(id))
+                                    .Skip((pageNumber - 1) * pageSize) // Omitir los registros anteriores a la página actual
+                                    .Take(pageSize) // Tomar los registros de la página actual
+                                    .ToListAsync();
+
+
+            return View(imagenes);
+        }
+
+        public async Task<IActionResult> formatoInformeaaaa(int id, int pageNumber)
+        {
+            pageNumber = pageNumber == 0 ? 1 : pageNumber;
+            var products = await _conexion.Imagenes.OrderBy(t => t.Fecha).Where(t => t.IdInformes.Equals(id)).ToListAsync();
+            var pageSize = 4;
+            // Realizar operaciones con la lista de productos recuperados
+
+            var ListadoNUM_ANNOS = await _conexion.Areas.ToListAsync();
+            ListadoNUM_ANNOS.Add(new Area { IdAreas = 0, Nombre = " --[Seleccionar]-- " });
+            ViewData["NUM_ANNOS"] = new SelectList(ListadoNUM_ANNOS.OrderBy(t => t.Nombre), "IdAreas", "Nombre");
+
+            var PalabrasClaves = await _conexion.PalabrasClaves.ToListAsync();
+            PalabrasClaves.Add(new PalabrasClave { IdPalabrasClave = 0, Nombre = " --[Seleccionar]-- " });
+            ViewData["PalabrasClaves"] = new SelectList(PalabrasClaves.OrderBy(t => t.Nombre), "IdPalabrasClave", "Nombre");
+
+
+            int numRegistros = 3; // Número de registros por página
+            var totalImagenes = await _conexion.Imagenes.OrderBy(t => t.Fecha).Where(t => t.IdInformes.Equals(id)).CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalImagenes / numRegistros);
+            var pageNumbers = Enumerable.Range(1, totalPages).ToList();
+            ViewBag.paginas = pageNumbers;
+            ViewBag.pageNumber = pageNumber;
+            ViewBag.PreviousPageNumber = pageNumber - 1;
+            ViewBag.NextPageNumber = pageNumber + 1;
 
             var imagenes = await _conexion.Imagenes
                                     .Where(t => t.IdInformes.Equals(id))
