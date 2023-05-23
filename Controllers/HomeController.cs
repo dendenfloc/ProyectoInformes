@@ -29,7 +29,7 @@ namespace ProyectoSonia.Controllers
         private readonly SoniaproyectContext _conexion;
 
         private const string appKey = "rnwla4y023r4da0";
-        private const string appSecret = "xz7dr4ggbtkjpe7";
+        private const string appSecret = "xz7dr4ggbtkjpe7";HJJKHJK
         // URL de retorno después de la autenticación
         private const string redirectUri = "https://supervisioninformes.azurewebsites.net/Home/";
         private readonly IWebHostEnvironment _env;
