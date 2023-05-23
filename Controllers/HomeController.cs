@@ -34,7 +34,7 @@ namespace ProyectoSonia.Controllers
         private const string redirectUri = "https://supervisioninformes.azurewebsites.net/Home/";
         private readonly IWebHostEnvironment _env;
 
-        // Instancia del objeto DropboxClient
+        // Instancia del objeto DropboxClientMBNMBMB
         private DropboxClient client;
 
         public ActionResult aa()
